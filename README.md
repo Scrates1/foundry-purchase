@@ -1,66 +1,57 @@
-## Foundry
+##
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+工具：https://book.getfoundry.sh/reference/cast/cast-call
 
-Foundry consists of:
+## 部署
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```bash
+forge script script/DeployPurchase.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --private-key $SELLER_PRIVATE_KEY
 ```
 
-### Test
+## 调用一个合约
 
-```shell
-$ forge test
+### 读
+
+查看商品价格：
+
+```
+cast call 0x998c58Ad6FdA347384d2fDeB42E7439411cBe096 "value()(uint256)" --rpc-url $SEPOLIA_RPC_URL
 ```
 
-### Format
+查看卖家：
 
-```shell
-$ forge fmt
+```bash
+cast call 0x998c58Ad6FdA347384d2fDeB42E7439411cBe096 "seller()(address)" --rpc-url $SEPOLIA_RPC_URL
 ```
 
-### Gas Snapshots
+查看买家：
 
-```shell
-$ forge snapshot
+```bash
+cast call 0x998c58Ad6FdA347384d2fDeB42E7439411cBe096 "buyer()(address)" --rpc-url $SEPOLIA_RPC_URL
 ```
 
-### Anvil
+查看状态：
 
-```shell
-$ anvil
+```bash
+cast call 0x998c58Ad6FdA347384d2fDeB42E7439411cBe096 "state()(uint8)" --rpc-url $SEPOLIA_RPC_URL
 ```
 
-### Deploy
+### 写
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+购买：
+
+```bash
+cast send 0x998c58Ad6FdA347384d2fDeB42E7439411cBe096 "confirmPurchase()" --value 20wei --private-key $BUYER_PRIVATE_KEY --rpc-url $SEPOLIA_RPC_URL
 ```
 
-### Cast
+确认收货：
 
-```shell
-$ cast <subcommand>
+```bash
+cast send 0x998c58Ad6FdA347384d2fDeB42E7439411cBe096 "confirmReceived()"  --private-key $BUYER_PRIVATE_KEY --rpc-url $SEPOLIA_RPC_URL
 ```
 
-### Help
+退款：
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+```bash
+cast send 0x998c58Ad6FdA347384d2fDeB42E7439411cBe096 "refundSeller()"  --private-key $SELLER_PRIVATE_KEY --rpc-url $SEPOLIA_RPC_URL
 ```
